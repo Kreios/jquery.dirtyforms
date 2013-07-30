@@ -9,8 +9,8 @@ if (typeof jQuery == 'undefined') throw ("jQuery Required");
 	$.extend({
 		DirtyForms: {
 			debug : false,
-			message : 'You\'ve made changes on this page which aren\'t saved. If you leave you will lose these changes.',
-			title : 'Are you sure you want to do that?',
+			message : 'Vous avez apporté des modifications',
+			title : 'Etes-vous sûr de vouloir quitter la page?',
 			dirtyClass : 'dirty',
 			listeningClass : 'dirtylisten',
 			ignoreClass : 'ignoredirty',
@@ -21,7 +21,7 @@ if (typeof jQuery == 'undefined') throw ("jQuery Required");
 					$.facebox(content);
 				},
 				fire : function(message, title){
-					var content = '<h1>' + title + '</h1><p>' + message + '</p><p><a href="#" class="ignoredirty button medium red continue">Continue</a><a href="#" class="ignoredirty button medium cancel">Stop</a>';
+					var content = '<h1>' + title + '</h1><p>' + message + '</p><p><a href="#" class="ignoredirty button medium red continue">Continuer</a> <a href="#" class="ignoredirty button medium cancel">Stop</a>';
 					$.facebox(content);
 				},
 				bind : function(){
