@@ -189,7 +189,12 @@ if (typeof jQuery == 'undefined') throw ("jQuery Required");
 					}
 				});
 			});
-		}
+		},
+
+        showDialogIfNecessary : function() {
+            dirtylog('showDialogIfNecessary called');
+            showDialogIfNecessary();
+        }
 
 		// ADD NEW METHODS HERE
 	};
@@ -422,6 +427,42 @@ if (typeof jQuery == 'undefined') throw ("jQuery Required");
 		settings.dialog.bind();
 	}
 
+	var showDialogIfNecessary = function(){
+		dirtylog('Commencing dialog sequence outside of actual event handling (if necessary)');
+
+		if(settings.deciding){
+			dirtylog('Leaving: Already in the deciding process');
+			return false;
+		}
+
+		if(!settings.isDirty()){
+			dirtylog('Leaving: Not dirty');
+			return false;
+		}
+
+		settings.deciding = true;
+		settings.decidingEvent = false;
+		dirtylog('Setting deciding active');
+
+		if(settings.dialog !== false)
+		{
+			dirtylog('Saving dialog content');
+			settings.dialogStash =settings.dialog.stash();
+			dirtylog(settings.dialogStash);
+		}
+
+		// Callback for page access in current state
+		$(document).trigger('defer.dirtyforms');
+
+		if(!settings.dialog) return;
+
+		settings.formStash = false;
+
+		dirtylog('Deferring to the dialog');
+		settings.dialog.fire($.DirtyForms.message, $.DirtyForms.title);
+		settings.dialog.bind();
+	}
+
 	var isDifferentTarget = function(ev){
 		var aTarget = $(ev.target).attr('target');
 		if (typeof aTarget === 'string') {
@@ -460,7 +501,9 @@ if (typeof jQuery == 'undefined') throw ("jQuery Required");
 		ev.preventDefault();
 		settings.dialogStash = false;
 		$(document).trigger('decidingcontinued.dirtyforms');
-		refire(settings.decidingEvent);
+		if (settings.decidingEvent !== false) {
+			refire(settings.decidingEvent);
+		}
 		settings.deciding = settings.currentForm = settings.decidingEvent = false;
 	}
 
